@@ -2,6 +2,8 @@
 import React from 'react'
 import { LoginForm } from './LoginForm'
 import { Button } from '../ui/button'
+import { SignupForm } from './Signup'
+import { ResetPassword } from './ResetPassword'
 
 export const AuthForm = () => {
     const [mode, setMode] = React.useState('login')
@@ -39,14 +41,33 @@ export const AuthForm = () => {
 
             }
             {
-                mode === "reset" && <span>Reset Form</span>
+                mode === "reset" && <>
+                 <ResetPassword />
+                 <div className='text-center '>
+                    <Button variant ={'link'} className='p-0' onClick={() => setMode('login')}>
+                        Back to Login
+                    </Button>
+                    
+                </div>
+
+                </>
+               
             }
             {
-                mode === "signup" && <span>Signup Form</span>
+                mode === "signup" && <>
+                <SignupForm />
+                <div className='text-center '>
+                    <Button variant ={'link'} className='p-0' onClick={() => setMode('login')}>
+                        Already have an account? Login
+                    </Button>
+                    
+                </div>
+                <p className=' px-8 text-center text-muted-foreground '>
+                    By signing up, you agree to our terms and conditions
+                </p>
+
+                </>
             }
-
-
-
         </div>
 
     )

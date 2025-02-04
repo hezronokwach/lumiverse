@@ -21,17 +21,14 @@ const formSchema = z.object({
     email: z.string().email({
         message: "Invalid email address",
     }),
-    password: z.string().min(8, {
-        message: "Password must be at least 8 characters"
-    }),
+   
 })
-export const LoginForm = ({className}:{className?:string}) => {
+export const ResetPassword = ({className}:{className?:string}) => {
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
           email: "",
-            password: "",
-        },
+        }
       })
 
       function onSubmit(values: z.infer<typeof formSchema>) {
@@ -57,20 +54,8 @@ export const LoginForm = ({className}:{className?:string}) => {
             </FormItem>
           )}
         />
-          <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type = "password" placeholder="Enter password" {...field} />
-              </FormControl>             
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit" className='w-full'>Login</Button>
+     
+        <Button type="submit" className='w-full'> Reset Password</Button>
       </form>
     </Form>
         </div>
