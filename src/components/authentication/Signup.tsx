@@ -1,6 +1,6 @@
 "use client"
-import React from 'react'
-import { z } from "zod"
+import React, { use, useState } from 'react'
+import { set, z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 
@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { cn } from '@/lib/utils'
+import { Loader2 } from 'lucide-react'
 
  const passwordValidationRegex = new RegExp(
   "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})" );
@@ -43,6 +44,7 @@ const formSchema = z.object({
     });
 
 export const SignupForm = ({className}:{className?:string}) => {
+  const[loading, setLoading] = useState(false)
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -54,8 +56,7 @@ export const SignupForm = ({className}:{className?:string}) => {
       })
 
       function onSubmit(values: z.infer<typeof formSchema>) {
-        // Do something with the form values.
-        // ✅ This will be type-safe and validated.
+        setLoading(true)        
         console.log(values)
       }
 
@@ -116,7 +117,9 @@ export const SignupForm = ({className}:{className?:string}) => {
             </FormItem>
           )}
         />
-        <Button type="submit" className='w-full'>Signup</Button>
+        <Button type="submit" className='w-full' disabled = {loading}>
+          {loading && <Loader2 className='mr-2 h-4 w-4 animate-spin'/>}
+          Signup</Button>
       </form>
     </Form>
         </div>
