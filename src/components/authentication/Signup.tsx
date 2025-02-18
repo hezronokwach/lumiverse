@@ -1,8 +1,9 @@
 "use client"
-import React, { use, useState } from 'react'
+import React, { use, useId, useState } from 'react'
 import { set, z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
+import { Redirect } from 'next'
 
 import { Button } from "@/components/ui/button"
 import {
@@ -16,6 +17,9 @@ import {
 import { Input } from "@/components/ui/input"
 import { cn } from '@/lib/utils'
 import { Loader2 } from 'lucide-react'
+import { toast } from "sonner"
+import { signup } from '@/app/actions/authActions'
+import { useRouter } from 'next/navigation'
 
  const passwordValidationRegex = new RegExp(
   "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})" );
@@ -45,6 +49,8 @@ const formSchema = z.object({
 
 export const SignupForm = ({className}:{className?:string}) => {
   const[loading, setLoading] = useState(false)
+  const toastid = useId();
+  const router = useRouter();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -55,9 +61,26 @@ export const SignupForm = ({className}:{className?:string}) => {
         },
       })
 
-      function onSubmit(values: z.infer<typeof formSchema>) {
-        setLoading(true)        
-        console.log(values)
+      async function onSubmit(values: z.infer<typeof formSchema>) {
+        toast.loading("Signin up...", {id: toastid})
+        setLoading(true) 
+        
+        const formData = new FormData()
+        formData.append("email", values.email)
+        formData.append("password", values.password)
+        formData.append("full_name", values.full_name)
+
+        const{success, error} = await signup(formData)
+        if (!success) {
+          console.log(error)
+          toast.error(error, {id: toastid}) 
+          setLoading(false)        
+        } else {
+          toast.success("Signup successful", {id: toastid})
+          setLoading(false);
+          router.push('/login')
+        }
+        setLoading(false)
       }
 
     return (
@@ -125,3 +148,4 @@ export const SignupForm = ({className}:{className?:string}) => {
         </div>
     )
 }
+
